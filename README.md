@@ -1,452 +1,1429 @@
-### **Blueprint for AI-Driven Autonomous MLOps Pipeline Capstone**
+# **Autonomous Drift Detection and Model Optimization in an AI-Augmented MLOps Pipeline**  
 
-#### **1. Problem Statement:**
-**Title:**  
-**"Real-Time Drift Detection and Model Optimization using AI Agents in an End-to-End Autonomous MLOps Pipeline"**
 
-In AI-driven applications, models degrade in performance over time due to changing data distributions (data drift) or model drift. Traditional MLOps pipelines address model retraining in a static manner but often fail to react to real-time shifts in data, leading to suboptimal performance or decision-making. This project aims to design and implement an **AI-augmented autonomous pipeline** capable of **real-time drift detection, automated retraining, and dynamic optimization** of machine learning models using **AI agents**, focusing on drift handling with **Evidently AI** and optimization using **Optuna**.
+As machine learning models operate in dynamic environments, they **degrade over time** due to changes in data distributions (data drift) and shifts in model performance (model drift). Traditional MLOps pipelines often rely on **static retraining schedules**, which fail to respond effectively to real-world variations.  
 
-The project will integrate an end-to-end **MLOps pipeline** that:
-- **Monitors data drift** in real-time using advanced data sources.
-- **Detects model drift** and triggers automated actions.
-- **Retrains models dynamically** based on drift detection and performance degradation.
-- **Optimizes models autonomously** using AI agents, improving hyperparameter tuning and inference efficiency.
-- **Uses synthetic data generation** to simulate edge cases and drift scenarios for more robust models.
+This project builds an **AI-driven autonomous MLOps pipeline** that:  
+- **Continuously monitors and detects drift** using AI agents.  
+- **Automates model retraining** based on detected drift patterns.  
+- **Optimizes models dynamically** using AI-powered hyperparameter tuning.  
+- **Simulates real-world drift scenarios** with synthetic data.  
+- **Deploys seamlessly** in both local and cloud environments.  
 
-The pipeline will be implemented both **locally** and deployed to **AWS** for scaling and production-level deployment.
-
-#### **2. Data Source(s):**
-**Primary Dataset: GDELT Global Database**  
-The **GDELT Project** monitors the world’s broadcast, print, and online news in real-time, translating it into a comprehensive open database of global human societal activity. It’s ideal for your use case because:
-- **Multimodal**: Includes topics like **events, sentiment**, and **metadata**.
-- **Real-time updates**: Constantly evolving data can serve as a real-world source for **data drift detection**.
-- **Advanced time-series data**: Provides a rich ground to detect shifts in societal trends, sentiment, and event frequency, which can cause data drift and serve as a good test case for your pipeline.
-
-**Advanced Dataset 2 (Optional for Simulations): Kaggle's Credit Card Fraud Detection Data**  
-This dataset contains transactions made by credit cards in September 2013 by European cardholders. It is highly imbalanced (positive class: fraud accounts for 0.172% of all transactions), making it perfect to test for model drift in fraud detection models due to its evolving patterns in fraudulent transactions. You can **simulate model drift** by incrementally adding transactions over time.
-
-**Synthetic Data Generation**  
-- **CTGAN (Conditional Tabular GAN)**: CTGAN will be used to generate synthetic data that mimics real-world drift scenarios. For example, you can simulate sudden shifts in patterns like fraud detection or sudden event surges in the GDELT dataset, testing how robust your models and drift detection system are.
-
-#### **3. Objectives of the Project**:
-1. **Real-Time Data Drift Detection**: Use **Evidently AI** to continuously monitor both data and model drift, allowing the pipeline to trigger automated responses.
-2. **AI-Augmented Pipeline with Autonomous Agents**: Deploy AI agents that can:
-   - Ingest data and detect anomalies in ingestion.
-   - Monitor model drift and trigger retraining automatically.
-   - Tune hyperparameters autonomously using **Optuna**.
-3. **Dynamic Model Retraining and Optimization**: When drift is detected, AI agents will handle:
-   - Model retraining based on new incoming data.
-   - Real-time hyperparameter tuning to improve model performance post-retraining.
-4. **Scalable Deployment**: Design the pipeline to run **locally** during development and be deployed to **AWS** for scaling, leveraging tools like **Pulumi** for infrastructure management and **Docker** for containerization.
+This pipeline ensures that models **remain adaptive, robust, and optimized** without manual intervention.  
 
 ---
 
-#### **4. Modern Tools & Technologies**:
-Here’s the comprehensive set of modern, robust tools used for each stage of the project, replacing traditional alternatives wherever appropriate:
+## ** Autonomous AI Agents in the Pipeline**  
 
-| **Pipeline Stage**           | **Modern Tools**                          | **Purpose**                                                                                                                                              |
-|------------------------------|--------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Data Ingestion**            | **Polars**, **Dask**                       | Fast, memory-efficient data ingestion and transformation, leveraging Polars for small data, and Dask for distributed processing of large datasets.        |
-| **Synthetic Data Generation** | **CTGAN**                                  | For creating synthetic datasets to simulate drift scenarios and edge cases, increasing the robustness of the models.                                       |
-| **Model Training**            | **CatBoost**, **LightGBM**                 | Gradient-boosting models known for handling categorical features, imbalanced datasets, and high-dimensional data, tuned for performance and accuracy.     |
-| **Model Optimization**        | **Optuna**                                 | State-of-the-art hyperparameter tuning framework that will dynamically optimize model hyperparameters.                                                    |
-| **Drift Detection**           | **Evidently AI**                           | Robust framework for tracking and monitoring both data and model drift in real-time.                                                                      |
-| **MLOps Orchestration**       | **Prefect**                                | Modern alternative to Airflow for orchestrating the pipeline, with a focus on simplicity and robust scheduling.                                            |
-| **Experiment Tracking**       | **MLflow**                                 | For tracking experiments, storing model metadata, and managing deployment stages.                                                                         |
-| **Monitoring & Alerts**       | **Grafana** with **Streamlit** dashboards  | Real-time visualization of drift detection, model performance, and health monitoring, with alert systems triggered based on configurable drift thresholds. |
-| **Deployment Infrastructure** | **Pulumi**                                 | Infrastructure as code tool used to manage AWS resources like S3, ECS, and Lambda.                                                                        |
-| **Containerization**          | **Docker**, **Docker Compose**             | Containerizing the application and pipeline for easy local development and AWS deployment.                                                                |
-| **CI/CD**                     | **GitHub Actions**, **AWS CodePipeline**   | Automating testing, deployment, and monitoring, ensuring continuous integration and delivery of the pipeline.                                              |
+The pipeline is powered by AI agents that **automate key processes**, ensuring a self-sustaining MLOps system.  
 
----
+1. **Data Ingestion Agent**  
+   - Periodically collects and preprocesses data from external sources.  
+   - Detects ingestion anomalies and missing data patterns.  
 
-#### **5. Project Milestones**:
+2. **Drift Detection Agent**  
+   - Monitors both **data drift** (changes in input distribution) and **model drift** (performance degradation).  
+   - Triggers automated retraining when drift surpasses a defined threshold.  
 
-| **Milestone**                                      | **Description**                                                                                                                                       | **Tools Involved**                      | **Expected Time** |
-|----------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------|------------------|
-| **Milestone 1: Data Ingestion & Transformation**   | Implement data ingestion pipeline with **Polars** and **Dask**, focusing on efficiency and scalability.                                                 | Polars, Dask                            | 1 week           |
-| **Milestone 2: Synthetic Data Generation**         | Generate synthetic data using **CTGAN** to simulate drift scenarios for robustness testing.                                                            | CTGAN                                   | 1 week           |
-| **Milestone 3: Model Development & Optimization**  | Train models with **CatBoost** and **LightGBM**, then integrate **Optuna** for dynamic hyperparameter tuning.                                           | CatBoost, LightGBM, Optuna              | 2 weeks          |
-| **Milestone 4: Drift Detection & Retraining**      | Integrate **Evidently AI** for real-time drift detection and set up AI agents to trigger model retraining based on drift detection thresholds.           | Evidently AI, Prefect, MLflow            | 2 weeks          |
-| **Milestone 5: Monitoring & Deployment Setup**     | Develop **Streamlit** and **Grafana** dashboards for real-time monitoring, then containerize the pipeline with **Docker** and set up deployment in AWS. | Streamlit, Grafana, Docker, Pulumi       | 2 weeks          |
-| **Milestone 6: CI/CD Integration**                 | Set up automated CI/CD pipeline using **GitHub Actions** and **AWS CodePipeline** to ensure continuous integration and smooth deployment.               | GitHub Actions, AWS CodePipeline         | 1 week           |
-| **Milestone 7: Performance Testing & Scalability** | Test the pipeline’s performance, run multiple drift detection scenarios, and evaluate the efficiency of dynamic retraining and optimization.            | Entire stack                            | 2 weeks          |
+3. **Model Optimization Agent**  
+   - Automatically fine-tunes hyperparameters to ensure optimal model performance.  
+   - Adapts the model dynamically to evolving data distributions.  
+
+These agents **replace manual workflows** and ensure that the pipeline continuously improves model accuracy and efficiency.  
 
 ---
 
-#### **6. Key AI Agents:**
+## **3. Key Features & Capabilities**  
 
-- **Data Ingestion AI Agent**: Continuously monitors data quality and automatically detects ingestion anomalies.
-- **Drift Detection AI Agent**: Monitors data and model drift, using Evidently AI to trigger retraining.
-- **Model Optimization AI Agent**: Automatically tunes model hyperparameters when drift is detected using Optuna.
-
----
-
-#### **7. Deliverables**:
-- **Code Repository**: Fully documented and production-ready code with detailed README for setup and execution.
-- **Drift Monitoring Dashboards**: Grafana and Streamlit dashboards for real-time visualization of drift and model performance.
-- **CI/CD Pipeline**: Automated testing and deployment system for AWS, managed via GitHub Actions and AWS CodePipeline.
-- **Synthetic Data Report**: Analysis of synthetic drift scenarios and their impact on model performance.
+| **Feature**                 | **Description**                                                                  |
+|-----------------------------|----------------------------------------------------------------------------------|
+| **Automated Data Ingestion** | Fetches and processes external data at scheduled intervals.                     |
+| **Autonomous Drift Detection** | AI-powered monitoring of data and model drift.                                 |
+| **Intelligent Model Retraining** | Triggers updates only when necessary, optimizing computational resources.    |
+| **Dynamic Hyperparameter Tuning** | AI agents optimize models after retraining for continuous improvement.    |
+| **Synthetic Data Generation** | Simulates drift scenarios to enhance model robustness.                         |
+| **Scalable & Portable**      | Runs locally and can be deployed to the cloud for production use.               |
+| **Monitoring & Alerting**    | Dashboards provide real-time insights into pipeline performance.                |
 
 ---
 
-This **blueprint** is comprehensive and ensures you are using modern, cutting-edge tools to create a **robust, scalable autonomous MLOps pipeline** that can be deployed in both local and cloud environments. 
+## **4. End-to-End Pipeline Workflow**  
 
+1. **Data Collection & Ingestion**  
+   - AI agent fetches external data at scheduled intervals.  
+   - Data is preprocessed and stored for downstream tasks.  
 
+2. **Drift Detection & Model Retraining**  
+   - AI agent monitors drift in new data batches.  
+   - If drift exceeds a defined threshold, automated model retraining is triggered.  
 
+3. **Model Optimization & Deployment**  
+   - Hyperparameters are optimized post-retraining.  
+   - The updated model is seamlessly deployed for inference.  
 
+4. **Continuous Monitoring & Alerts**  
+   - Dashboards track drift, retraining events, and model performance.  
+   - Alerts notify when intervention is needed.  
 
-### 1. **Setup and Configuration**
+### **Scheduled Execution**  
+- The ingestion pipeline can be automated using a **scheduler** like `cron` or an **orchestration tool**.  
+- Example `cron` job (runs ingestion every 5 minutes):  
+  ```bash
+  */5 * * * * /path/to/venv/bin/python /path/to/project/src/data/ingest_data.py
+  ```  
 
-- **1.1 Configurations**
-  - **1.1.1 `config.yaml`**: Global settings, paths, hyperparameters.
-  - **1.1.2 `logging.yaml`**: Log formatting, level control.
-  - **1.1.3 `aws_credentials.yaml`**: Encrypted AWS credentials.
-  - **1.1.4 `dev.env`**: Development environment variables.
-  - **1.1.5 `prod.env`**: Production environment variables.
-  - **1.1.6 `test.env`**: Testing environment variables.
-
-- **1.2 Docker and Virtualization**
-  - **1.2.1 `Dockerfile`**: Production Docker build.
-  - **1.2.2 `Dockerfile.dev`**: Local development setup.
-  - **1.2.3 `docker-compose.yml`**: Multi-container definition.
-  - **1.2.4 `docker-compose.override.yml`**: Local overrides.
-  - **1.2.5 `docker-compose.test.yml`**: Testing environment.
-
----
-
-### 2. **Data Ingestion and Preprocessing**
-
-- **2.1 Data Ingestion**
-  - **2.1.1 `ingest_data.py`**: Fetch data from APIs.
-  - **2.1.2 `s3_data_sync.py`**: Sync data with S3.
-  - **2.1.3 `external/`**: Raw external data.
-  - **2.1.4 `raw_data/`**: Unprocessed data.
-
-- **2.2 Data Preprocessing**
-  - **2.2.1 `preprocess_data.py`**: Data cleaning and feature engineering.
-  - **2.2.2 `validate_data.py`**: Schema validation.
-
-- **2.3 Synthetic Data Generation**
-  - **2.3.1 `generate_synthetic_data.py`**: Generates synthetic datasets.
-  - **2.3.2 `synthetic/`**: Stores generated synthetic data.
+### **Cloud Deployment**  
+- The pipeline is **cloud-ready** and can be deployed using containerization and infrastructure automation.  
+- Supports **CI/CD workflows** for seamless updates.  
 
 ---
 
-### 3. **AI Agents and Core Models**
-
-- **3.1 AI Automation Agents**
-  - **3.1.1 `data_ingestion_agent.py`**: Manages data ingestion.
-  - **3.1.2 `drift_detection_agent.py`**: Detects data drift.
-  - **3.1.3 `optimization_agent.py`**: Hyperparameter optimization.
-  - **3.1.4 `retraining_agent.py`**: Handles retraining models.
-  - **3.1.5 `evaluation_agent.py`**: Evaluates model performance.
-  - **3.1.6 `ci_cd_agent.py`**: Manages CI/CD processes.
-
-- **3.2 Model Training and Serving**
-  - **3.2.1 `train_model.py`**: Main model training script.
-  - **3.2.2 `optimize_model.py`**: Optimize model parameters.
-  - **3.2.3 `evaluate_model.py`**: Evaluate model metrics.
-  - **3.2.4 `retrain_model.py`**: Retrain models on drift.
-  - **3.2.5 `serve_model.py`**: Model serving API.
+## **6. Project Deliverables**  
+- **Fully automated MLOps pipeline** with AI-driven agents.  
+- **Monitoring dashboards** for drift detection and model performance tracking.  
+- **CI/CD integration** for continuous testing and deployment.  
+- **Synthetic data experiments** to evaluate model robustness.  
 
 ---
 
-### 4. **Testing and Validation**
+This project **pushes the boundaries of AI-driven automation** by enabling models to self-adapt, ensuring long-term reliability without human intervention.
 
-- **4.1 Unit Testing**
-  - **4.1.1 `test_data_ingestion.py`**: Ingestion tests.
-  - **4.1.2 `test_preprocessing.py`**: Preprocessing tests.
-  - **4.1.3 `test_model_training.py`**: Model training tests.
-  - **4.1.4 `test_drift_detection.py`**: Drift detection tests.
 
-- **4.2 Integration Testing**
-  - **4.2.1 `test_pipeline.py`**: Full pipeline integration tests.
-  - **4.2.2 `test_serve_model.py`**: API integration tests.
 
-- **4.3 End-to-End Testing**
-  - **4.3.1 `test_end_to_end.py`**: Complete pipeline E2E tests.
 
----
 
-### 5. **Orchestration and Automation**
 
-- **5.1 Pipeline Orchestration**
-  - **5.1.1 `orchestrate_pipeline.py`**: Prefect/Airflow pipeline orchestration.
-  - **5.1.2 `pipeline_utils.py`**: Utility functions for error handling.
-  - **5.1.3 `run_pipeline.py`**: Entry point for running pipelines.
 
-- **5.2 Cloud Automation**
-  - **5.2.1 `ecs_deploy.sh`**: AWS ECS deployment script.
-  - **5.2.2 `k8s_deployment.yaml`**: Kubernetes deployment file.
 
----
+AI-Driven-Autonomous-MLOps-Pipeline/
+│
+├── .github/                               # GitHub Actions for CI/CD
+│   └── workflows/
+│       ├── ci.yml                         # CI pipeline (testing, linting)
+│       ├── cd.yml                         # CD pipeline (build, deployment)
+│       └── docker_build.yml               # Multi-stage Docker build pipeline
+│
+├── config/
+│   ├── config.yaml                        # Central config for environment variables, model params, paths
+│   ├── docker-compose.yml                 # Multi-container Docker setup (for local dev)
+│   ├── logging.yaml                       # Logging configuration for centralized logs
+│   ├── credentials/                       # Encrypted credentials (gitignored)
+│   │   └── aws_credentials.yaml           # AWS credentials for cloud deployment
+│   └── environment/                       # Environment-specific configurations
+│       ├── dev.env                        # Development environment variables
+│       ├── prod.env                       # Production environment variables
+│       └── test.env                       # Testing environment variables
+│
+├── data/
+│   ├── raw/                               # Raw datasets from external sources (e.g., GDELT, Kaggle)
+│   ├── processed/                         # Processed data ready for model training
+│   ├── synthetic/                         # Synthetic datasets generated via CTGAN
+│   └── external/                          # External datasets from advanced sources
+│
+├── src/
+│   ├── agents/
+│   │   ├── data_ingestion_agent.py        # Automated data ingestion, validation agent
+│   │   ├── drift_detection_agent.py       # Data drift detection agent (Evidently AI)
+│   │   ├── optimization_agent.py          # Dynamic optimization agent for model tuning (Optuna)
+│   │   ├── retraining_agent.py            # Retraining agent for automated retraining
+│   │   ├── evaluation_agent.py            # Agent for model performance evaluation
+│   │   └── ci_cd_agent.py                 # Automated agent for CI/CD pipeline handling
+│   │
+│   ├── data/
+│   │   ├── ingest_data.py                 # Data ingestion using Polars/Dask for large-scale data
+│   │   ├── preprocess_data.py             # Data cleaning, preprocessing, feature engineering
+│   │   ├── generate_synthetic_data.py     # CTGAN-based synthetic data generation
+│   │   ├── validate_data.py               # Data validation with Great Expectations
+│   │   └── feature_engineering.py         # Feature engineering and transformation
+│   │
+│   ├── models/
+│   │   ├── train_model.py                 # Model training (CatBoost, LightGBM) automation
+│   │   ├── optimize_model.py              # Hyperparameter tuning with Optuna
+│   │   ├── retrain_model.py               # Retraining script for models on data drift
+│   │   ├── evaluate_model.py              # Model evaluation script (performance metrics)
+│   │   └── serve_model.py                 # Model serving (FastAPI/Flask) with Docker
+│   │
+│   ├── pipeline/
+│   │   ├── orchestrate_pipeline.py        # Prefect-based orchestration for end-to-end automation
+│   │   ├── pipeline_utils.py              # Utility functions for task retries, failure handling
+│   │   └── run_pipeline.py                # Entry point to run the pipeline locally or on AWS
+│   │
+│   ├── monitoring/
+│   │   ├── drift_detection.py             # Track data/model drift with Evidently AI metrics
+│   │   ├── model_health_monitor.py        # Continuous model health monitoring (latency, performance)
+│   │   ├── log_performance.py             # Logging model/system performance (using MLflow)
+│   │   └── alerts.py                      # Alerting system for drift, failures, anomalies (AWS SNS, email)
+│   │
+│   ├── infrastructure/
+│   │   ├── docker/
+│   │   │   ├── Dockerfile                 # Multi-stage Dockerfile for local and prod environments
+│   │   │   ├── Dockerfile.dev             # Dockerfile for dev environment with additional dependencies
+│   │   │   └── docker-compose.override.yml # Overrides for Docker-Compose in dev
+│   │   ├── aws/
+│   │   │   ├── ecs_deploy.sh              # AWS ECS deployment script
+│   │   │   └── s3_sync.sh                 # Sync models, data with AWS S3
+│   │   ├── k8s/
+│   │   │   └── k8s_deployment.yaml        # Kubernetes deployment manifests (optional)
+│   │   └── terraform/
+│   │       └── terraform_infra.tf         # Infrastructure-as-code for AWS setup (optional)
+│   │
+│   └── ci_cd/
+│       ├── build_pipeline.py              # CI/CD pipeline for building the project
+│       ├── test_pipeline.py               # CI pipeline for testing (unit, integration, E2E)
+│       └── deploy_pipeline.py             # CD pipeline for deployment on AWS
+│
+├── tests/
+│   ├── unit/
+│   │   ├── test_data_ingestion.py         # Unit tests for data ingestion, validation
+│   │   ├── test_preprocessing.py          # Unit tests for preprocessing
+│   │   ├── test_model_training.py         # Unit tests for training and optimization
+│   │   └── test_drift_detection.py        # Unit tests for Evidently AI-based drift detection
+│   ├── integration/
+│   │   ├── test_pipeline.py               # Integration tests for Prefect pipeline orchestration
+│   │   ├── test_model_serving.py          # Integration tests for model serving (FastAPI/Flask)
+│   └── e2e/
+│       └── test_end_to_end.py             # End-to-end tests for the entire pipeline
+│
+├── notebooks/
+│   ├── eda_gdelt.ipynb                    # Exploratory Data Analysis (EDA) on GDELT dataset
+│   ├── eda_fraud.ipynb                    # EDA on advanced fraud dataset (Kaggle)
+│   └── synthetic_data_analysis.ipynb      # Analysis of synthetic data generated via CTGAN
+│
+├── artifacts/
+│   ├── models/                            # Trained models and artifacts saved after each run
+│   ├── mlflow/                            # MLflow logs and experiment tracking
+│   └── optuna_study/                      # Logs of Optuna optimization experiments
+│
+├── monitoring/
+│   ├── grafana/
+│   │   └── grafana_dashboard.json         # Grafana dashboard for monitoring drift, resource usage
+│   ├── streamlit/
+│   │   └── streamlit_dashboard.py         # Streamlit dashboard for real-time interactive visualization
+│   └── prometheus/
+│       └── prometheus_config.yml          # Prometheus config for monitoring and collecting system metrics
+│
+├── logs/
+│   ├── drift_logs.log                     # Data/model drift logs
+│   ├── performance_logs.log               # Logs for tracking performance metrics
+│   ├── system_logs.log                    # System-level logs (resource usage, errors)
+│   └── alerts/
+│       └── alert_notifications.log        # Alert notifications log for failures or drift detection
+│
+├── docs/
+│   ├── README.md                          # High-level project overview and setup instructions
+│   ├── setup_guide.md                     # Guide to setting up and running the pipeline locally/AWS
+│   ├── deployment_guide.md                # Detailed deployment guide (Docker, AWS, ECS, etc.)
+│   ├── dev_workflow.md                    # Development workflow guide (branching, CI/CD, versioning)
+│   └── aws_deployment.md                  # AWS-specific deployment guide (ECS, S3, etc.)
+│
+├── .env                                   # Environment variables (gitignored)
+├── .gitignore                             # Files and directories to be ignored by git
+├── requirements.txt                       # Production dependencies
+├── requirements-dev.txt                   # Development dependencies (testing, linting, etc.)
+├── requirements-aws.txt                   # AWS-specific dependencies
+├── requirements-docker.txt                # Docker-specific dependencies
+└── requirements-test.txt                  # Testing-specific dependencies (pytest, etc.)
 
-### 6. **Monitoring and Alerts**
 
-- **6.1 Monitoring and Logs**
-  - **6.1.1 `drift_detection.py`**: Runs Evidently AI drift checks.
-  - **6.1.2 `log_performance.py`**: Logs performance metrics.
-  - **6.1.3 `performance_logs.log`**: Performance logging output.
-  - **6.1.4 `alerts.py`**: Alerting mechanism for drift.
 
-- **6.2 Visualization Dashboards**
-  - **6.2.1 `grafana_dashboard.json`**: Grafana visualization dashboard.
-  - **6.2.2 `streamlit_dashboard.py`**: Real-time visualization using Streamlit.
 
----
 
-### 7. **Model Artifacts and Versioning**
 
-- **7.1 Model Management**
-  - **7.1.1 `models/`**: Directory for storing model artifacts.
-  - **7.1.2 `model_registry.py`**: MLflow-based model versioning.
-  - **7.1.3 `s3_model_backup.sh`**: Script to back up models to S3.
 
-- **7.2 MLflow Tracking**
-  - **7.2.1 `mlflow/`**: Stores logs, metrics, and experiment results.
 
----
 
-### 8. **Documentation and Guides**
 
-- **8.1 Main Documentation**
-  - **8.1.1 `README.md`**: Project overview and setup instructions.
-  - **8.1.2 `CONTRIBUTING.md`**: Contribution guidelines.
-  - **8.1.3 `CODE_OF_CONDUCT.md`**: Code of conduct.
-
-- **8.2 Guides and Walkthroughs**
-  - **8.2.1 `pipeline_docs.md`**: Explains pipeline architecture.
-  - **8.2.2 `data_docs.md`**: In-depth data ingestion and preprocessing documentation.
-  - **8.2.3 `deployment_guide.md`**: Deployment instructions.
-  - **8.2.4 `monitoring_guide.md`**: Monitoring and alerts guide.
-
----
-### 9. **Continuous Improvement (Iteration 1)**
-
----
-
-#### 9.1 **CI/CD Pipeline Refinement**
-
-- **9.1.1 `.github/`**
-  - **9.1.1.1 `ci.yml`**: Continuous integration pipeline including testing, linting, and building processes.
-  - **9.1.1.2 `cd.yml`**: Continuous deployment pipeline for pushing builds to AWS ECS or Kubernetes.
-  - **9.1.1.3 `docker_build.yml`**: Multi-stage Docker build, optimized for both development and production.
-
-- **9.1.2 `ci_cd/`**
-  - **9.1.2.1 `build_pipeline.py`**: Script handling project build automation.
-  - **9.1.2.2 `test_pipeline.py`**: Automated testing pipeline covering unit, integration, and E2E tests.
-  - **9.1.2.3 `deploy_pipeline.py`**: Deployment automation script, handling AWS ECS and Kubernetes.
-
----
-
-#### 9.2 **Incremental Model Improvements**
-
-- **9.2.1 Data Validation Enhancements**
-  - **9.2.1.1 `validate_data.py`**: Enhanced to include advanced schema validation, anomaly detection, and error logging.
-  - **9.2.1.2 `data_quality_check.py`**: New script to ensure high data quality by checking for missing values, outliers, and inconsistencies.
-  - **9.2.1.3 `data_validation_logs.log`**: Log file to store the results of the data validation process.
-
-- **9.2.2 Feature Engineering Optimization**
-  - **9.2.2.1 `feature_engineering.py`**: Improved feature selection methods, adding automated feature importance ranking (SHAP, Permutation Importance).
-  - **9.2.2.2 `feature_transformation.py`**: Added advanced feature transformations including binning, scaling, and interaction term generation.
-
----
-
-#### 9.3 **Enhanced Monitoring and Metrics**
-
-- **9.3.1 Model Performance Monitoring**
-  - **9.3.1.1 `monitoring/`**
-    - **9.3.1.1.1 `drift_detection.py`**: Updated to include model drift metrics in addition to data drift.
-    - **9.3.1.1.2 `drift_metrics.json`**: Output file storing drift metrics over time.
-    - **9.3.1.1.3 `health_metrics.py`**: Expanded to monitor new model health metrics like F1-score, precision-recall curves.
-    - **9.3.1.1.4 `latency_monitor.py`**: Tracks API latency and flags any performance issues.
-
-- **9.3.2 Alerting System**
-  - **9.3.2.1 `alerts.py`**: Refined alerting logic to include critical thresholds for various metrics (e.g., AUC below 0.7).
-  - **9.3.2.2 `alerts_config.yaml`**: Centralized configuration for the alerting thresholds and notification channels.
-  - **9.3.2.3 `alert_notifications.log`**: Log capturing all triggered alerts and responses.
-
----
-
-#### 9.4 **Optimization and Tuning**
-
-- **9.4.1 Hyperparameter Optimization**
-  - **9.4.1.1 `optimize_model.py`**: Enhanced hyperparameter tuning with Bayesian Optimization and hyperband strategies.
-  - **9.4.1.2 `optuna_logs.log`**: Updated log format to include optimization steps, results, and parameter scores.
-  - **9.4.1.3 `optuna_study/`**: Directory storing Optuna study results for reproducibility.
-
-- **9.4.2 Model Retraining**
-  - **9.4.2.1 `retrain_model.py`**: Enhanced to incorporate advanced triggers for retraining based on monitored performance metrics and scheduled intervals.
-  - **9.4.2.2 `model_retrain_logs.log`**: Stores detailed logs of retraining processes, including old vs new performance metrics.
-  - **9.4.2.3 `retraining_strategy.yaml`**: Configuration file that defines when and how retraining should occur based on specific triggers (data drift, performance degradation).
-
----
-
-#### 9.5 **Visualization and User Dashboards**
-
-- **9.5.1 Grafana and Prometheus Monitoring**
-  - **9.5.1.1 `prometheus_config.yml`**: Expanded to track new metrics related to system resource usage, API latency, and model drift.
-  - **9.5.1.2 `grafana_dashboard_v2.json`**: Enhanced dashboard with additional panels for data drift, model performance trends, and prediction latencies.
-
-- **9.5.2 Streamlit Dashboard**
-  - **9.5.2.1 `streamlit_dashboard_v2.py`**: Improved interactive dashboard to allow real-time monitoring and manual triggering of retraining if necessary.
-  - **9.5.2.2 `dashboard_logs.log`**: Logs of dashboard interactions, including data visualizations and user actions.
-
----
-
-#### 9.6 **Extended Documentation and User Guidance**
-
-- **9.6.1 Expanded Setup Guides**
-  - **9.6.1.1 `setup_guide_v2.md`**: Enhanced guide with troubleshooting tips, GPU setup, and cloud-specific configurations (AWS, GCP).
-  - **9.6.1.2 `local_development_setup.md`**: Instructions for local development setup with detailed steps for Docker and virtual environments.
-  - **9.6.1.3 `cloud_deployment_setup.md`**: Detailed cloud deployment instructions (AWS ECS, Kubernetes).
-
-- **9.6.2 Advanced Development Guides**
-  - **9.6.2.1 `dev_workflow_v2.md`**: Updated developer workflow to include more advanced branching strategies, feature flagging, and CI/CD.
-  - **9.6.2.2 `ci_cd_guide.md`**: Comprehensive CI/CD guide that includes multi-cloud setup, failover strategies, and Canary/Blue-Green deployment methods.
+### **1.1 Configurations**
 
 ---
 
-#### 9.7 **Infrastructure as Code (IaC) and Deployment**
+### **1.1.1 `config.yaml` — Global Settings, Paths, and Hyperparameters**
+---
 
-- **9.7.1 Terraform and AWS**
-  - **9.7.1.1 `terraform_infra_v2.tf`**: Enhanced Terraform script for provisioning more optimized AWS infrastructure (ECS clusters, RDS, Lambda functions).
-  - **9.7.1.2 `s3_bucket_policy.tf`**: Terraform-managed policy for controlling access to S3 buckets for model storage.
-  - **9.7.1.3 `terraform_logs.log`**: Logs storing Terraform plan, apply, and destroy outputs.
+**Purpose:**  
+The `config.yaml` file is the **centralized configuration hub** for your entire project. It defines project-wide settings, data paths, model hyperparameters, agent configurations, and environment-specific details. By consolidating these parameters in a single file, you improve **maintainability**, **scalability**, and **consistency** across modules.  
 
-- **9.7.2 Kubernetes**
-  - **9.7.2.1 `k8s/`**
-    - **9.7.2.1.1 `k8s_deployment_v2.yaml`**: Kubernetes manifest file for more optimized scaling, load balancing, and resource management.
-    - **9.7.2.1.2 `k8s_secrets.yaml`**: Secrets management for Kubernetes, encrypting sensitive credentials and keys.
-    - **9.7.2.1.3 `k8s_autoscaler.yaml`**: Autoscaler configuration for Kubernetes to automatically adjust resources based on system load.
+Instead of hardcoding values directly into Python scripts, referencing this file ensures changes are propagated consistently throughout the project.  
 
 ---
 
-#### 9.8 **Security, Access Control, and Compliance**
+**Recommended Structure:**
+```yaml
+# General project settings
+project:
+  name: "Autonomous MLOps Pipeline"
+  version: "1.0.0"
 
-- **9.8.1 Security Audits**
-  - **9.8.1.1 `security_audit.py`**: Automated security audits to check for vulnerabilities, permission misconfigurations, and dependency issues.
-  - **9.8.1.2 `audit_logs.log`**: Logs of security audit results.
-  - **9.8.1.3 `iam_policy_reviewer.py`**: Script to review IAM policies for best practices in AWS/GCP.
+# Data paths for all major data stages
+paths:
+  raw_data: "./data/raw"
+  processed_data: "./data/processed"
+  synthetic_data: "./data/synthetic"
+  models: "./artifacts/models"
+  logs: "./logs"
 
-- **9.8.2 Secrets Management**
-  - **9.8.2.1 `secrets_manager.py`**: Script managing secrets (AWS Secrets Manager, GCP Secret Manager) securely within the pipeline.
-  - **9.8.2.2 `secret_keys_vault.yaml`**: Vault for encrypted secret keys (not stored in version control).
+# Model parameters for CatBoost model
+model:
+  type: "CatBoost"
+  hyperparameters:
+    learning_rate: 0.01
+    max_depth: 6
+    iterations: 1000
+    early_stopping_rounds: 50
+  optimization:
+    algorithm: "Optuna"
+    n_trials: 100
+    timeout: 3600  # 1 hour for tuning time limit
 
----
+# Autonomous agents' configuration
+agents:
+  data_ingestion_agent:
+    batch_size: 10000
+    retries: 3
+  drift_detection_agent:
+    threshold: 0.05
+  retraining_agent:
+    trigger_drift_threshold: 0.07
 
-#### 9.9 **Future Expansion and Extensibility**
+# Logging configuration (links to `logging.yaml`)
+logging:
+  level: "INFO"
 
-- **9.9.1 Feature Expansion**
-  - **9.9.1.1 `future_expansion_plan.md`**: Document outlining future scalability features such as multi-cloud deployment, real-time model serving, and API rate-limiting strategies.
-  - **9.9.1.2 `plugin_architecture.py`**: Modular plugin system for easily integrating new agents, data sources, and monitoring tools.
+# AWS S3 settings for model and data storage
+aws:
+  bucket_name: "autonomous-mlops-pipelinexw"
+  region: "us-east-1"
 
----
-### 10. **Continuous Improvement (Iteration 2)**
+news_api:
+  base_url: "https://newsapi.org/v2/everything"
+  api_key: "b00b276a080b4015ba9aeed375450017"
+  query: "Machine Learning"
+  language: "en"
+  max_results: 100
 
----
-
-#### 10.1 **Advanced CI/CD and Deployment Refinement**
-
-- **10.1.1 `.github/`**
-  - **10.1.1.1 `ci_v2.yml`**: Updated continuous integration pipeline to support distributed testing and parallelized workflows for faster CI.
-  - **10.1.1.2 `cd_v2.yml`**: Deployment pipeline refined to support canary releases, blue-green deployments, and rolling updates.
-  - **10.1.1.3 `docker_optimized_build.yml`**: Further optimization of Docker builds with multi-platform support and reduced image sizes using Docker BuildKit.
-  - **10.1.1.4 `security_checks.yml`**: New workflow file to automatically run security and vulnerability scans on each pull request.
-
-- **10.1.2 `ci_cd/`**
-  - **10.1.2.1 `distributed_build_pipeline.py`**: New script enabling parallelized builds and distributed resource management.
-  - **10.1.2.2 `test_pipeline_v2.py`**: Added support for stress testing and load testing in addition to unit and integration tests.
-  - **10.1.2.3 `rollback_pipeline.py`**: Script handling rollback strategies in case of deployment failures, ensuring zero downtime.
-  - **10.1.2.4 `deploy_rollback_monitor.py`**: Monitoring script that checks the success/failure of deployment and automatically triggers rollbacks if required.
-
----
-
-#### 10.2 **Data Handling and Feature Engineering Enhancements**
-
-- **10.2.1 Data Validation and Integrity Checks**
-  - **10.2.1.1 `enhanced_data_validation.py`**: Added new validation logic for multi-dimensional data checks, deep feature validation, and new categorical imbalance detection.
-  - **10.2.1.2 `data_versioning.py`**: Script for version controlling datasets, ensuring reproducibility and tracking lineage for data used in model training.
-  - **10.2.1.3 `data_validation_v2_logs.log`**: Updated log format to capture more granular details during data validation.
-  - **10.2.1.4 `data_schema_version_v2.yaml`**: Schema file with versioning for tracking changes in data formats over time.
-
-- **10.2.2 Advanced Feature Engineering**
-  - **10.2.2.1 `advanced_feature_selection.py`**: Added methods for unsupervised feature selection (PCA, t-SNE) and feature embedding extraction.
-  - **10.2.2.2 `feature_interaction_discovery.py`**: Automated discovery of meaningful feature interactions using correlation matrices and statistical tests.
-  - **10.2.2.3 `synthetic_feature_generation.py`**: Script that uses GANs (Generative Adversarial Networks) to generate synthetic features for imbalanced datasets or rare classes.
-  - **10.2.2.4 `feature_importance_tracking.json`**: Updated file format for tracking feature importance over time, especially for dynamic models.
-
----
-
-#### 10.3 **Advanced Monitoring, Alerting, and Observability**
-
-- **10.3.1 Model and Data Drift**
-  - **10.3.1.1 `drift_detection_v2.py`**: Added support for unsupervised drift detection using clustering-based drift metrics.
-  - **10.3.1.2 `custom_drift_metric.py`**: Script allowing custom drift metrics, enabling domain-specific drift detection (e.g., business KPIs).
-  - **10.3.1.3 `drift_reports_v2.json`**: JSON file for detailed reports on data/model drift, now including counterfactual examples and edge-case analysis.
-  - **10.3.1.4 `real_time_drift_detection.py`**: New real-time drift detection integrated into model-serving API.
-
-- **10.3.2 Model Health and Alerting**
-  - **10.3.2.1 `health_monitor_v2.py`**: Enhanced health monitoring to include resource usage, model inference latency per data type, and memory footprint.
-  - **10.3.2.2 `early_warning_system.py`**: New script that triggers early warnings for performance degradation or latency spikes.
-  - **10.3.2.3 `alerting_v2_config.yaml`**: Updated configuration to support integration with third-party alerting systems (PagerDuty, Slack, MS Teams).
-  - **10.3.2.4 `incident_logs_v2.log`**: Detailed logs for all triggered alerts and corresponding remediation actions, now including incident severity scoring.
+```
 
 ---
 
-#### 10.4 **Optimization, Tuning, and Scalability**
+**Key Best Practices for `config.yaml`:**
 
-- **10.4.1 Hyperparameter and Model Tuning**
-  - **10.4.1.1 `advanced_optimization.py`**: Introduced advanced hyperparameter optimization techniques such as Population Based Training (PBT) and NAS (Neural Architecture Search).
-  - **10.4.1.2 `parallel_optimization.py`**: Script enabling distributed hyperparameter optimization across multiple cloud instances.
-  - **10.4.1.3 `optuna_tuning_v2.log`**: Log storing results from advanced tuning runs, now supporting complex hyperparameter spaces.
-  - **10.4.1.4 `automated_early_stopping.py`**: Implemented automated early stopping in model tuning to avoid overfitting and reduce training time.
-
-- **10.4.2 Scalability and Load Testing**
-  - **10.4.2.1 `load_testing_v2.py`**: New script to simulate real-world loads on the API, handling increased user traffic and scaling scenarios.
-  - **10.4.2.2 `scalability_config.yaml`**: Configuration file for auto-scaling cloud infrastructure (AWS, GCP), fine-tuned for cost and performance balance.
-  - **10.4.2.3 `stress_test_results_v2.log`**: Detailed log capturing results from load and stress tests, focusing on system response under heavy loads.
+- Avoid hardcoding paths, file names, or parameters directly in code. This simplifies updates when paths or parameters change.  
+- Use **YAML anchors** (`&` for defining values) and **aliases** (`*` for referencing them) to reduce duplication across sections.  
+- Add **meaningful comments** to describe key configuration entries to improve clarity for future developers.  
+- Do not include **sensitive information** (e.g., passwords, tokens, keys) in `config.yaml`. Such data should be stored securely in `.env` or encrypted files like `aws_credentials.yaml`.
 
 ---
 
-#### 10.5 **Dashboard Improvements and Visualization**
+### **1.1.2 `logging.yaml` — Log Formatting and Control**
+---
 
-- **10.5.1 Grafana and Prometheus Enhancements**
-  - **10.5.1.1 `grafana_dashboard_v3.json`**: Further expanded Grafana dashboard with additional panels for anomaly detection, advanced drift tracking, and latency over time.
-  - **10.5.1.2 `prometheus_alerting_rules_v2.yaml`**: Updated alerting rules to include more nuanced alerts for model drift, resource spikes, and service disruptions.
-  - **10.5.1.3 `monitoring_dashboard_config.json`**: Configurations for a new monitoring dashboard tailored to specific teams (DevOps, Data Science, Business).
+**Purpose:**  
+The `logging.yaml` file standardizes your project's logging structure. A centralized logging configuration improves visibility into the system’s behavior, aids debugging, and ensures traceability.  
 
-- **10.5.2 Extended Streamlit Visualization**
-  - **10.5.2.1 `streamlit_v2.py`**: Enhanced interactive dashboard with support for visualizing drift metrics, model comparison plots, and feature importance trends over time.
-  - **10.5.2.2 `dashboard_v2_auth.py`**: Added authentication and role-based access control to the dashboard, ensuring secure access for different user roles (Admin, Analyst, Developer).
-  - **10.5.2.3 `streamlit_report_generator.py`**: New script for generating automated performance and drift reports based on real-time data.
+This file defines:  
+- **Log levels** (e.g., `DEBUG`, `INFO`, `WARNING`, `ERROR`) to control verbosity.  
+- **Log formatters** to define log structure for consistency.  
+- **Handlers** to direct logs to multiple outputs (e.g., console, file).  
+- **Rotating log files** to prevent excessive log growth.  
 
 ---
 
-#### 10.6 **Documentation and Collaboration Enhancements**
+**Recommended Structure:**
+```yaml
+version: 1
+disable_existing_loggers: False
 
-- **10.6.1 Setup and User Documentation Expansion**
-  - **10.6.1.1 `setup_guide_v3.md`**: Further refined guide with a section on setting up distributed CI/CD pipelines and multi-cloud deployments.
-  - **10.6.1.2 `cloud_infrastructure_setup.md`**: Detailed guide for setting up cloud infrastructure for high-availability deployments.
-  - **10.6.1.3 `user_manual_v2.md`**: Expanded user manual to include instructions on new features like rollback handling, real-time drift detection, and automated tuning.
+formatters:
+  standard:
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  detailed:
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(module)s:%(funcName)s:%(lineno)d - %(message)s"
 
-- **10.6.2 Development and Contribution Documentation**
-  - **10.6.2.1 `contributing_v2.md`**: Updated contribution guide including new sections on distributed development, security practices, and performance testing.
-  - **10.6.2.2 `developer_workflow_v3.md`**: Guide covering advanced workflows like distributed development, code reviews, and CI/CD strategies across multi-cloud environments.
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: standard
+    level: INFO
+  file:
+    class: logging.FileHandler
+    formatter: detailed
+    level: DEBUG
+    filename: "./logs/system_logs.log"
+  rotation_file:
+    class: logging.handlers.TimedRotatingFileHandler
+    formatter: detailed
+    level: DEBUG
+    filename: "./logs/rotated_logs.log"
+    when: midnight
+    interval: 1
+    backupCount: 7
+
+loggers:
+  root:
+    level: INFO
+    handlers: [console, file]
+```
 
 ---
-#### 10.7 **Security, Access Control, and Compliance Iteration**
 
-- **10.7.1 Extended Security Audits**
-  - **10.7.1.1 `security_audit_v2.py`**: Enhanced to check for additional vulnerabilities, including XSS, CSRF, and API rate-limiting flaws.
-  - **10.7.1.2 `dependency_check_v2.py`**: New script for scanning dependencies for known vulnerabilities (CVEs) and checking for out-of-date packages.
-  - **10.7.1.3 `security_audit_v2_report.log`**: Updated report format including a security risk score for each identified vulnerability.
+**Key Best Practices for `logging.yaml`:**
 
-- **10.7.2 Secrets and Compliance**
-  - **10.7.2.1 `encrypted_secrets_manager.py`**: Enhanced secrets management with automatic encryption and secure access rotation.
-  - **10.7.2.2 `compliance_monitor.py`**: New script for checking compliance with data protection laws (GDPR, HIPAA) based on current data usage and storage practices.
-  - **10.7.2.3 `compliance_audit_log_v2.log`**:
+- Use **multiple log levels**:  
+  - `DEBUG` for development insights.  
+  - `INFO` for general system behavior.  
+  - `WARNING`, `ERROR`, and `CRITICAL` for severe issues.  
+- Use **log rotation** to archive old logs, preventing large log files.  
+- Include **detailed context** (e.g., module name, function name, and line number) to improve traceability during debugging.  
+- Use different log files for:  
+  - System logs  
+  - Drift detection logs  
+  - Model performance logs  
+- Ensure logs are generated for key checkpoints such as data ingestion, preprocessing, training, and inference.
+
+---
+
+
+## **1.1.3 `aws_credentials.yaml` — Encrypted AWS Credentials (Updated for IAM User without MFA)**
+
+---
+
+### **Step 1: Create an AWS IAM User via CLI**
+
+Since you’re opting for an IAM user without MFA, follow these steps to create a new user with the necessary permissions for your project.
+
+---
+
+**1. Create the IAM User:**
+```bash
+aws iam create-user --user-name autonomous-pipeline-user
+```
+
+---
+
+**2. Attach Required Permissions:**
+
+For this project, the following permissions are essential:
+
+- **`AmazonS3FullAccess`** — Full access to manage S3 storage.
+- **`AmazonEC2FullAccess`** — For managing AWS ECS deployment.
+- **`AWSLambda_FullAccess`** — For Lambda automation (if required).
+- **`CloudWatchFullAccess`** — For enhanced monitoring.
+- **`AmazonSNSFullAccess`** — For alerts and notifications.
+
+Run the following command for each policy:
+
+```bash
+aws iam attach-user-policy \
+    --user-name autonomous-pipeline-user \
+    --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess
+```
+
+Repeat the command for each required policy.  
+
+---
+
+**3. Generate Access Keys:**
+```bash
+aws iam create-access-key --user-name autonomous-pipeline-user
+```
+
+This command outputs:
+
+```json
+{
+    "AccessKey": {
+        "UserName": "autonomous-pipeline-user",
+        "AccessKeyId": "AKIAEXAMPLEID",
+        "SecretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+        "Status": "Active",
+        "CreateDate": "2025-03-13T10:30:00Z"
+    }
+}
+```
+
+**Important:** Save these credentials securely, as the `SecretAccessKey` will not be shown again.
+
+---
+
+### **Step 2: Encrypt AWS Credentials for `aws_credentials.yaml`**  
+
+Since you won’t use MFA, encrypting your AWS credentials is crucial to protect sensitive information. This guide will walk you through securing your `aws_credentials.yaml` file using `sops`.  
+
+---
+
+## **Step 2.1: Install `sops` (YAML Encryption Tool)**  
+
+`sops` is a powerful tool designed for encrypting YAML, JSON, and other structured data formats securely. It’s highly effective for protecting sensitive keys and credentials.  
+
+### **Installation on Linux (Ubuntu/Debian)**
+```bash
+sudo apt-get update
+sudo apt-get install sops
+```
+
+### **Manual Installation (if package is unavailable)**
+Download and install `sops` manually:  
+```bash
+wget -O sops.deb "https://github.com/getsops/sops/releases/download/v3.9.4/sops_3.9.4_amd64.deb"
+sudo dpkg -i sops.deb
+rm sops.deb
+```
+
+### **Installation on Windows (via WSL)**  
+If you are working in **WSL (Windows Subsystem for Linux)**, use the Ubuntu installation method above.  
+
+### **Installation on macOS**  
+```bash
+brew install sops
+```
+
+
+### **Step 2: Encrypt AWS Credentials for `aws_credentials.yaml`**  
+
+Since you won’t use MFA, encrypting your AWS credentials is crucial to protect sensitive information. This guide will walk you through securing your `aws_credentials.yaml` file using `sops`.  
+
+---
+
+## **Step 2.1: Install `sops` (YAML Encryption Tool)**  
+
+`sops` is a powerful tool designed for encrypting YAML, JSON, and other structured data formats securely. It’s highly effective for protecting sensitive keys and credentials.  
+
+### **Installation on Linux (Ubuntu/Debian)**
+```bash
+sudo apt-get update
+sudo apt-get install sops
+```
+
+### **Manual Installation (if package is unavailable)**
+Download and install `sops` manually:  
+```bash
+wget -O sops.deb "https://github.com/getsops/sops/releases/download/v3.9.4/sops_3.9.4_amd64.deb"
+sudo dpkg -i sops.deb
+rm sops.deb
+```
+
+### **Installation on Windows (via WSL)**  
+If you are working in **WSL (Windows Subsystem for Linux)**, use the Ubuntu installation method above.  
+
+### **Installation on macOS**  
+```bash
+brew install sops
+```
+
+---
+
+## **Step 2.2: Automate AWS Credentials Encryption with SOPS**  
+This script dynamically **generates, encrypts, and verifies** an AWS credentials file using SOPS and Age encryption. It ensures that sensitive credentials are never stored in plaintext.
+
+### **Script for AWS Credentials Encryption**
+```bash
+#!/bin/bash
+
+### --- Step 2.2: Encrypt AWS Credentials --- ###
+
+# Navigate to the Project Root
+PROJECT_ROOT=$(realpath "$(dirname "$0")/..")
+cd "$PROJECT_ROOT" || exit 1
+cd config
+
+# Define Configuration Paths
+CONFIG_DIR="$PROJECT_ROOT/config"
+SOPS_DIR="$CONFIG_DIR/sops"
+AGE_DIR="$SOPS_DIR/age"
+AGE_KEY_FILE="$AGE_DIR/keys.txt"
+SOPS_CONFIG="$CONFIG_DIR/.sops.yaml"
+AWS_CREDENTIALS="$CONFIG_DIR/aws_credentials.yaml"
+
+# Prompt for AWS Credentials
+read -p "Enter AWS Access Key ID: " AWS_ACCESS_KEY
+read -s -p "Enter AWS Secret Access Key: " AWS_SECRET_KEY
+echo
+read -p "Enter AWS Region: " AWS_REGION
+
+# Remove Existing Setup
+rm -rf "$SOPS_DIR" "$SOPS_CONFIG" "$AWS_CREDENTIALS"
+mkdir -p "$AGE_DIR"
+
+# Generate Age Encryption Key
+age-keygen -o "$AGE_KEY_FILE"
+AGE_PUBLIC_KEY=$(grep -o "age1[0-9a-zA-Z]*" "$AGE_KEY_FILE")
+
+# Configure SOPS to Use Age Key
+export SOPS_AGE_KEY_FILE="$AGE_KEY_FILE"
+echo "export SOPS_AGE_KEY_FILE=$AGE_KEY_FILE" >> ~/.bashrc
+source ~/.bashrc
+
+# Create SOPS Configuration
+cat <<EOF > "$SOPS_CONFIG"
+creation_rules:
+  - path_regex: '.*aws_credentials.yaml$'
+    encrypted_regex: '.*'
+    key_groups:
+      - age:
+          - "$AGE_PUBLIC_KEY"
+EOF
+
+# Set Permissions
+chmod 600 "$AGE_KEY_FILE" "$SOPS_CONFIG"
+
+# Create AWS Credentials File
+cat <<EOF > "$AWS_CREDENTIALS"
+aws:
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
+  region: $AWS_REGION
+EOF
+
+# Encrypt AWS Credentials
+sops --encrypt --age "$AGE_PUBLIC_KEY" --output "$AWS_CREDENTIALS" "$AWS_CREDENTIALS"
+
+# Verify Encryption
+sops --decrypt "$AWS_CREDENTIALS" >/dev/null && echo " AWS Credentials encrypted successfully!"
+```
+
+---
+
+### **Explanation of the Script**
+1. **Prompts for AWS credentials dynamically** instead of using hardcoded values.
+2. **Removes any previous encryption setup** and regenerates everything from scratch.
+3. **Generates a new Age encryption key** to ensure fresh security keys.
+4. **Configures SOPS to automatically encrypt `aws_credentials.yaml`**.
+5. **Applies correct file permissions** to prevent unauthorized access.
+6. **Encrypts the AWS credentials** using Age encryption.
+7. **Verifies decryption works correctly** before confirming success.
+
+This approach ensures that AWS credentials are securely stored and **never exposed in plaintext**.
+
+### **Step 2.3: Modify `.gitignore` to Prevent Leaking Sensitive Files**  
+
+To ensure that sensitive encryption keys and unencrypted credentials are **never committed to Git**, update your `.gitignore` file with the following:  
+
+#### **Append the Following to `.gitignore`**
+```plaintext
+# Ignore unencrypted AWS credentials
+config/aws_credentials.yaml
+
+# Ignore Age encryption keys
+config/sops/age/
+# Ignore environment variables and credentials
+.env
+config/credentials/*
+config/aws_credentials.yaml
+config/.sops.yaml
+
+# Ignore SOPS-related encryption keys and directories
+config/sops/
+config/sops/**
+config/sops/age/
+config/sops/age/*
+config/sops/age/keys.txt
+
+# Ignore SOPS configuration (optional, if you don't want it in version control)
+config/.sops.yaml
+```
+
+### **Why This Matters?**
+- **Prevents committing unencrypted AWS credentials**, reducing the risk of accidental exposure.
+- **Ensures encryption keys stay private**, preventing unauthorized decryption.
+- **Keeps your repository clean**, ensuring only encrypted credentials are versioned.
+
+This ensures that even if someone accesses your repo, they **cannot decrypt your AWS credentials** without your local Age key.
 
 
 
+
+# **1.2 Docker and Virtualization – Comprehensive Guide**  
+
+This section focuses on **containerizing the AI-Driven MLOps pipeline** using **Docker and Docker Compose** to ensure **portability, reproducibility, and scalability**.  
+
+---
+
+## **1.2.1 `Dockerfile` (Production Build)**  
+
+The `Dockerfile` defines a **lightweight, self-contained production environment** for running the pipeline.  
+
+### **Contents of `Dockerfile`**  
+```dockerfile
+# Use official minimal Python 3.10 image
+FROM python:3.10-slim
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy only the dependencies file first to optimize caching
+COPY requirements.txt .
+
+# Install dependencies inside the container
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the entire application code
+COPY . .
+
+# Expose a port (if running a web service inside the container)
+EXPOSE 8080
+
+# Run the pipeline script when the container starts
+CMD ["python", "src/pipeline/run_pipeline.py"]
+```
+
+### **Explanation**  
+- The `FROM` instruction selects a minimal Python image to reduce container size.  
+- The `WORKDIR /app` command ensures that all subsequent operations run inside `/app`.  
+- The `COPY requirements.txt .` copies the dependency file separately to leverage Docker’s layer caching.  
+- The `RUN pip install --no-cache-dir -r requirements.txt` installs dependencies within the container.  
+- The `COPY . .` copies all project files into the container.  
+- The `EXPOSE 8080` specifies the port if a web-based service (e.g., Flask, FastAPI) is running.  
+- The `CMD ["python", "src/pipeline/run_pipeline.py"]` ensures the pipeline runs when the container starts.  
+
+---
+
+## **1.2.2 `Dockerfile.dev` (Development Environment)**  
+
+This file defines a **development-friendly environment** with additional tools for debugging.  
+
+### **Contents of `Dockerfile.dev`**  
+```dockerfile
+# Use Python 3.10 slim image
+FROM python:3.10-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies useful for debugging
+RUN apt-get update && apt-get install -y \
+    curl git vim && rm -rf /var/lib/apt/lists/*
+
+# Copy development dependencies
+COPY requirements-dev.txt .
+
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements-dev.txt
+
+# Copy the entire project
+COPY . .
+
+# Expose port for local services
+EXPOSE 8080
+
+# Keep the container running for interactive debugging
+CMD ["/bin/bash"]
+```
+
+### **Explanation**  
+- Installs debugging tools (`curl`, `git`, `vim`).  
+- Uses `requirements-dev.txt` to install additional dependencies.  
+- Keeps the container running with an interactive Bash shell for debugging.  
+
+---
+
+## **1.2.3 `docker-compose.yml` (Production Multi-Container Setup)**  
+
+Docker Compose is used to manage **multi-container deployments**. This file defines a **production environment** where multiple services can run together.  
+
+### **Contents of `docker-compose.yml`**  
+```yaml
+version: "3.9"
+
+services:
+  mlops-pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mlops_pipeline
+    restart: unless-stopped
+    volumes:
+      - .:/app
+    ports:
+      - "8080:8080"
+    environment:
+      - ENVIRONMENT=production
+```
+
+### **Explanation**  
+- The `services` section defines the main containerized application (`mlops-pipeline`).  
+- The `build` section specifies the context (`.`) and `Dockerfile`.  
+- The `container_name` assigns a name to the running container.  
+- The `restart: unless-stopped` ensures the container restarts automatically if it stops unexpectedly.  
+- The `volumes` mapping mounts the project directory inside the container, allowing live code changes.  
+- The `ports` mapping exposes port `8080`.  
+- The `environment` variable sets the container’s execution mode to **production**.  
+
+---
+
+## **1.2.4 `docker-compose.override.yml` (Development Mode)**  
+
+This file **modifies the default `docker-compose.yml`** to create a **development-friendly environment**.  
+
+### **Contents of `docker-compose.override.yml`**  
+```yaml
+version: "3.9"
+
+services:
+  mlops-pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    environment:
+      - ENVIRONMENT=development
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    command: ["/bin/bash"]
+```
+
+### **Explanation**  
+- Uses `Dockerfile.dev` instead of `Dockerfile`.  
+- Keeps the container running interactively.  
+- Maps local files to the container for real-time development.  
+
+---
+
+## **Running the Containers**  
+
+### **Building Docker Images**  
+```bash
+docker-compose build
+```
+
+### **Starting Development Mode**  
+```bash
+docker-compose up -d
+```
+To attach to the container’s terminal:  
+```bash
+docker exec -it mlops_pipeline /bin/bash
+```
+
+### **Starting Production Mode**  
+```bash
+docker-compose -f docker-compose.yml up -d
+```
+
+### **Stopping and Removing Containers**  
+```bash
+docker-compose down
+```
+To remove all containers and images:  
+```bash
+docker system prune -a
+```
+
+---
+
+## **Adding `.gitignore` for Docker**  
+
+Modify the `.gitignore` file to **prevent tracking unwanted files**.  
+
+```gitignore
+# Ignore Python caches
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore Virtual Environments
+.venv/
+env/
+
+# Ignore Docker-specific files
+docker-compose.override.yml
+*.log
+*.db
+```
+
+---
+
+## **Verifying Setup**  
+
+After starting your container, verify if the pipeline is running correctly:  
+```bash
+docker ps  # Check running containers
+docker logs mlops_pipeline  # View logs
+```
+
+---
+
+## **Automating Setup with a Script**  
+
+The following script automates Docker setup and execution.  
+
+Save as `setup_docker.sh`:  
+```bash
+#!/bin/bash
+
+# Check if Docker is installed
+if ! command -v docker &> /dev/null; then
+    echo "Docker is not installed. Please install it manually."
+    exit 1
+fi
+
+# Build the project
+echo "Building Docker images..."
+docker-compose build
+
+# Start development mode
+echo "Starting Docker containers..."
+docker-compose up -d
+
+echo "Docker setup complete!"
+```
+
+Run it using:  
+```bash
+bash setup_docker.sh
+```
+
+---
+
+## **Summary**  
+
+1. **`Dockerfile`** - Defines a lightweight production container for the MLOps pipeline.  
+2. **`Dockerfile.dev`** - Creates an interactive development container.  
+3. **`docker-compose.yml`** - Defines multi-container production deployment.  
+4. **`docker-compose.override.yml`** - Overrides production settings for local development.  
+5. **Container management commands** - Explained how to build, run, and stop containers.  
+6. **`.gitignore`** - Configured to prevent tracking unnecessary Docker files.  
+7. **Automation** - Provided `setup_docker.sh` to streamline execution.  
+
+This ensures the **MLOps pipeline is fully containerized, scalable, and easy to manage**.
+
+---
+
+
+
+# 2.1.1 Data ingestion and syncing #
+
+- Loads **API key from `config.yaml`** securely.  
+- **Fetches** news articles from NewsAPI.  
+- **Handles errors** and retries if needed.  
+- **Saves data** to `data/raw/` with a timestamp.  
+- **Includes a unit test** for validation.  
+- Uses **only open-source libraries** and avoids unnecessary dependencies.  
+
+---
+
+## **Step 1: Get API Key and Store It Securely**
+1. Go to **[NewsAPI.org](https://newsapi.org/register)** and create a free account.  
+2. Copy your API key.  
+3. Store it in `config/config.yaml` (do not hardcode it in Python files).  
+
+```yaml
+news_api:
+  base_url: "https://newsapi.org/v2/everything"
+  api_key: "b00b276a080b4015ba9aeed375450017"
+  query: "Machine Learning"
+  language: "en"
+  max_results: 100
+
+```
+
+---
+
+## **Step 2: Implement `ingest_data.py`**
+Create `src/data/ingest_data.py` and add the following code:  
+
+```python
+import os
+import yaml
+import requests
+import json
+import time
+from datetime import datetime
+from pathlib import Path
+
+# Resolve project root dynamically
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+CONFIG_PATH = PROJECT_ROOT / "config" / "config.yaml"
+
+def load_config():
+    with open(CONFIG_PATH, "r") as f:
+        return yaml.safe_load(f)
+
+config = load_config()
+NEWSAPI_CONFIG = config.get("news_api", {})
+DATA_PATHS = config.get("paths", {})
+
+def fetch_newsapi_data():
+    if not NEWSAPI_CONFIG.get("api_key"):
+        print("Error: Missing NewsAPI key in config.yaml.")
+        return None
+
+    url = f"{NEWSAPI_CONFIG['base_url']}?q={NEWSAPI_CONFIG['query']}&pageSize={NEWSAPI_CONFIG['max_results']}&language={NEWSAPI_CONFIG['language']}&apiKey={NEWSAPI_CONFIG['api_key']}"
+    retries = config.get("agents", {}).get("data_ingestion_agent", {}).get("retries", 3)
+    backoff_factor = 5
+
+    for _ in range(retries):
+        try:
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+            return response.json().get("articles", [])
+        except requests.exceptions.RequestException as e:
+            print(f"Error fetching NewsAPI data: {e}. Retrying in {backoff_factor} seconds...")
+            time.sleep(backoff_factor)
+    return None
+
+def save_data(data, source):
+    if not data:
+        print(f"No data fetched from {source}. Skipping save.")
+        return
+
+    # Ensure paths are relative to the project root
+    save_dir = PROJECT_ROOT / Path(DATA_PATHS.get("raw_data", "data/raw"))
+    save_dir.mkdir(parents=True, exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    save_path = save_dir / f"{source}_{timestamp}.json"
+
+    with open(save_path, "w") as f:
+        json.dump(data, f, indent=4)
+
+    print(f"Saved {len(data)} articles from {source} to {save_path}")
+
+def main():
+    data = fetch_newsapi_data()
+    save_data(data, "newsapi")
+
+if __name__ == "__main__":
+    main()
+
+
+```
+
+---
+
+## **Step 3: Running and Testing the Script**
+### **Activate Virtual Environment**
+```bash
+source .venv/bin/activate  # Linux/Mac
+```
+
+### **Install Dependencies**
+```bash
+pip install requests pyyaml
+```
+
+### **Run the Script**
+```bash
+python src/data/ingest_data.py
+```
+
+### **Expected Output**
+```
+Saved 50 articles from newsapi to data/raw/newsapi_20250313_203015.json
+```
+
+### **Check Saved Data**
+```bash
+ls data/raw/
+cat data/raw/newsapi_20250313_203015.json | jq
+```
+
+---
+
+## **Final Summary**
+- **Step 1:** Get API key and store it securely.  
+- **Step 2:** Implement `ingest_data.py` to fetch and save NewsAPI data.  
+- **Step 3:** Run the script and validate results.  
+
+This ensures **secure, automated, and robust news ingestion** using **NewsAPI**.
+
+
+
+
+# 2.1.2: Syncing Data with S3 (`s3_data_sync.py`)**  
+
+After fetching and processing data, syncing it with **AWS S3** ensures **data availability, scalability, and version control** for downstream tasks like training, monitoring, and retraining. This step will:  
+- **Upload new data** to S3 when ingestion occurs.  
+- **Download data** from S3 when required.  
+- **Ensure efficient synchronization** to avoid unnecessary uploads.  
+
+---
+
+### **1. Setup AWS Credentials for S3 Access**  
+Ensure AWS credentials are **encrypted** using `sops` (Step 2.2). To configure AWS CLI with the credentials stored in `aws_credentials.yaml`:  
+
+#### **Load Credentials in Environment Variables**
+```bash
+export AWS_ACCESS_KEY_ID=$(sops --decrypt config/aws_credentials.yaml | yq '.aws.access_key_id')
+export AWS_SECRET_ACCESS_KEY=$(sops --decrypt config/aws_credentials.yaml | yq '.aws.secret_access_key')
+export AWS_DEFAULT_REGION=$(sops --decrypt config/aws_credentials.yaml | yq '.aws.region')
+```
+
+---
+
+### **2. Implementing `s3_data_sync.py`**  
+This script will:  
+- **Load bucket name and paths dynamically from `config.yaml`.**  
+- **Automatically sync data directories with S3.**  
+- **Skip already-uploaded files** to save bandwidth.  
+
+#### **`src/data/s3_data_sync.py`**
+```python
+import os
+import subprocess
+import yaml
+import sys
+from pathlib import Path
+
+# Load config.yaml
+CONFIG_PATH = Path(__file__).resolve().parents[3] / "config" / "config.yaml"
+
+def load_config():
+    """Loads configuration from YAML file."""
+    with open(CONFIG_PATH, "r") as f:
+        return yaml.safe_load(f)
+
+config = load_config()
+S3_BUCKET = config.get("aws", {}).get("bucket_name", "")
+DATA_PATHS = config.get("aws", {}).get("sync_paths", ["data/raw", "data/processed", "data/external", "data/synthetic"])
+
+if not S3_BUCKET:
+    print("Error: S3 bucket name missing in config.yaml.")
+    sys.exit(1)
+
+def ensure_directories_exist():
+    """Creates missing directories from DATA_PATHS if they don't exist."""
+    for path in DATA_PATHS:
+        os.makedirs(path, exist_ok=True)
+
+def load_aws_credentials():
+    """Loads AWS credentials from sops-encrypted aws_credentials.yaml."""
+    creds_path = Path(__file__).resolve().parents[3] / "config" / "aws_credentials.yaml"
+    try:
+        result = subprocess.run(["sops", "--decrypt", str(creds_path)], capture_output=True, text=True, check=True)
+        aws_creds = yaml.safe_load(result.stdout).get("aws", {})
+
+        if not aws_creds:
+            print("Error: AWS credentials missing in decrypted file.")
+            sys.exit(1)
+
+        os.environ["AWS_ACCESS_KEY_ID"] = aws_creds.get("access_key_id", "")
+        os.environ["AWS_SECRET_ACCESS_KEY"] = aws_creds.get("secret_access_key", "")
+
+        # Ensure the region is valid
+        aws_region = aws_creds.get("region") or "us-east-1"
+        os.environ["AWS_DEFAULT_REGION"] = aws_region
+
+    except subprocess.CalledProcessError as e:
+        print("Error: Failed to decrypt AWS credentials. Ensure `sops` is installed and configured.")
+        print("SOPS Error:", e)
+        sys.exit(1)
+
+def sync_s3(local_path, direction):
+    """Syncs a local directory with S3."""
+    if not os.path.exists(local_path):
+        print(f"Skipping: Directory '{local_path}' does not exist.")
+        return  # Skip instead of exiting
+
+    load_aws_credentials()
+    s3_uri = f"s3://{S3_BUCKET}/{os.path.basename(local_path)}/"
+
+    if direction == "upload":
+        command = ["aws", "s3", "sync", local_path, s3_uri, "--exact-timestamps"]
+        print(f"Uploading: {local_path} → {s3_uri}")
+    else:
+        command = ["aws", "s3", "sync", s3_uri, local_path, "--exact-timestamps"]
+        print(f"Downloading: {s3_uri} → {local_path}")
+
+    subprocess.run(command, check=True)
+    print(f"Sync complete for {local_path}")
+
+if __name__ == "__main__":
+    direction = "upload"  # Default direction
+
+    # Override with CLI argument if provided
+    if len(sys.argv) > 1:
+        direction = sys.argv[1].lower()
+        if direction not in ["upload", "download"]:
+            print("Error: Direction must be 'upload' or 'download'.")
+            sys.exit(1)
+
+    # Ensure directories exist before syncing
+    ensure_directories_exist()
+
+    # Sync all predefined directories
+    for path in DATA_PATHS:
+        sync_s3(path, direction)
+
+```
+
+---
+
+### **3. Usage Examples**  
+Run the script dynamically with user input:  
+
+#### **Upload Data to S3**
+```bash
+python src/data/s3_data_sync.py --path data/raw --direction upload
+```
+
+#### **Download Data from S3**
+```bash
+python src/data/s3_data_sync.py --path data/raw --direction download
+```
+
+---
+
+### **5. Updating `.gitignore` to Prevent Sensitive File Uploads**
+Modify `.gitignore` to ensure that sensitive or unnecessary files do not get committed:
+
+#### **`.gitignore` Additions**
+```
+# AWS Credentials
+config/aws_credentials.yaml
+
+# Local data and logs
+data/*
+logs/*
+!data/external/
+!data/raw/
+```
+
+---
+
+## **Key Features of this Implementation**  
+- **Security-first approach**: AWS credentials are encrypted with `sops`.  
+- **Automated handling**: No hardcoded values; dynamically fetches bucket name from `config.yaml`.  
+- **Sync efficiency**: Uses `aws s3 sync` to avoid unnecessary reuploads.  
+- **User-friendly**: Provides both **Python and Bash** implementations for ease of use.  
+
+This completes **Step 2.1.2 (S3 Data Sync)**.
+
+
+
+
+
+# **2.2 Data Preprocessing and feature engineering **  
+
+# **2.2 Data Preprocessing Guide**  
+This guide covers the entire **data preprocessing pipeline**, including **data cleaning, feature engineering, and schema validation** using the `preprocess_and_validate.py` script.
+
+---
+
+## **Overview of the Preprocessing Pipeline**
+1. **Loading raw data** from JSON files stored in `data/raw/`.
+2. **Cleaning the data**:
+   - Removing duplicates.
+   - Handling missing values.
+   - Dropping unnecessary columns.
+3. **Feature engineering**:
+   - Extracting date-related attributes.
+   - Creating text-based features.
+4. **Saving the processed data** in `data/processed/`.
+5. **Validating schema and data types** to ensure consistency.
+
+---
+
+## **2.2.1 Preprocessing and Validation Code**
+### **File: `src/data/preprocess_feature_eng.py`**
+```python
+import os
+import json
+import yaml
+import pandas as pd
+import re
+from pathlib import Path
+from datetime import datetime
+
+# Resolve project root dynamically
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+CONFIG_PATH = PROJECT_ROOT / "config" / "config.yaml"
+
+# Load configuration
+def load_config():
+    with open(CONFIG_PATH, "r") as f:
+        return yaml.safe_load(f)
+
+config = load_config()
+DATA_PATHS = config.get("paths", {})
+
+RAW_DATA_DIR = PROJECT_ROOT / Path(DATA_PATHS.get("raw_data", "data/raw"))
+PROCESSED_DATA_DIR = PROJECT_ROOT / Path(DATA_PATHS.get("processed_data", "data/processed"))
+PROCESSED_DATA_DIR.mkdir(parents=True, exist_ok=True)  # Ensure processed directory exists
+
+# Expected schema for validation
+EXPECTED_SCHEMA = {
+    "title": str,
+    "description": str,
+    "url": str,
+    "publishedAt": "datetime64[ns]",
+    "published_year": "int64",
+    "published_month": "int64",
+    "published_day": "int64",
+    "published_weekday": "int64",
+    "title_word_count": "int64",
+    "description_word_count": "int64"
+}
+
+# Load raw JSON data
+def load_raw_data():
+    """Loads the most recent raw JSON data from data/raw/"""
+    json_files = sorted(RAW_DATA_DIR.glob("newsapi_*.json"), reverse=True)
+
+    if not json_files:
+        print("No raw data files found.")
+        return None
+
+    latest_file = json_files[0]
+    with open(latest_file, "r") as f:
+        data = json.load(f)
+
+    return pd.DataFrame(data)
+
+# Clean raw data
+def clean_data(df):
+    """Cleans raw data by handling missing values, duplicates, and unnecessary columns."""
+    if df.empty:
+        print("Empty dataset after loading. Skipping cleaning.")
+        return df
+
+    # Drop duplicates
+    df.drop_duplicates(subset=["title", "url"], inplace=True)
+
+    # Drop unnecessary columns
+    drop_columns = ["source", "content"]  # Content is often incomplete in NewsAPI
+    df.drop(columns=[col for col in drop_columns if col in df.columns], inplace=True)
+
+    # Handle missing values
+    df.dropna(subset=["title", "description", "url"], inplace=True)
+
+    return df
+
+# Feature engineering
+def feature_engineering(df):
+    """Extracts useful features from the data."""
+    if df.empty:
+        print("Empty dataset after cleaning. Skipping feature engineering.")
+        return df
+
+    # Convert `publishedAt` to datetime
+    df["publishedAt"] = pd.to_datetime(df["publishedAt"], errors="coerce")
+
+    # Extract date-related features
+    df["published_year"] = df["publishedAt"].dt.year
+    df["published_month"] = df["publishedAt"].dt.month
+    df["published_day"] = df["publishedAt"].dt.day
+    df["published_weekday"] = df["publishedAt"].dt.weekday
+
+    # Text-based features
+    df["title_word_count"] = df["title"].apply(lambda x: len(str(x).split()))
+    df["description_word_count"] = df["description"].apply(lambda x: len(str(x).split()))
+
+    return df
+
+# Save processed data
+def save_processed_data(df):
+    """Saves the cleaned and transformed data to the processed directory."""
+    if df.empty:
+        print("Processed data is empty. Skipping save.")
+        return None
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    save_path = PROCESSED_DATA_DIR / f"processed_{timestamp}.csv"
+
+    df.to_csv(save_path, index=False)
+    print(f"Processed data saved to {save_path}")
+    return save_path  # Return path for validation step
+
+# Validate schema
+def validate_data(csv_path):
+    """Validates the processed data against the expected schema."""
+    if not csv_path or not Path(csv_path).exists():
+        print(f"Error: Processed data file not found at {csv_path}")
+        return False
+
+    df = pd.read_csv(csv_path)
+
+    # Check required columns
+    missing_columns = [col for col in EXPECTED_SCHEMA.keys() if col not in df.columns]
+    if missing_columns:
+        print(f"Error: Missing columns {missing_columns}")
+        return False
+
+    # Convert columns explicitly to correct types
+    df["title"] = df["title"].fillna("").astype(str)
+    df["description"] = df["description"].fillna("").astype(str)
+    df["url"] = df["url"].fillna("").astype(str)
+
+    # Validate data types
+    for col, expected_dtype in EXPECTED_SCHEMA.items():
+        if col in df.columns:
+            actual_dtype = str(df[col].dtype)
+            if actual_dtype != expected_dtype:
+                print(f"Error: Column {col} has incorrect data type: expected {expected_dtype}, found {actual_dtype}")
+                return False
+
+    # Validate URLs
+    url_pattern = re.compile(r"https?://[^\s]+")
+    invalid_urls = df[~df["url"].astype(str).str.match(url_pattern, na=False)]
+    if not invalid_urls.empty():
+        print(f"Error: Invalid URLs found:\n{invalid_urls[['url']].head()}")
+        return False
+
+    print("Data validation passed successfully.")
+    return True
+
+# Main execution
+def main():
+    df = load_raw_data()
+    if df is not None:
+        df = clean_data(df)
+        df = feature_engineering(df)
+        processed_file = save_processed_data(df)
+
+        if processed_file:
+            validate_data(processed_file)
+
+if __name__ == "__main__":
+    main()
+```
+
+---
+
+## **Step-by-Step Guide**
+
+### **1. Load Raw Data**
+- The script retrieves the most recent raw JSON file from `data/raw/`.
+- JSON data is loaded into a Pandas DataFrame.
+- If no data is found, it prints an error message.
+
+### **2. Data Cleaning**
+- **Duplicate Removal:** Removes duplicate entries based on `title` and `url`.
+- **Column Dropping:** Removes unnecessary columns (`source`, `content`).
+- **Handling Missing Values:** Drops rows where `title`, `description`, or `url` are missing.
+
+### **3. Feature Engineering**
+- Converts `publishedAt` to a proper datetime format.
+- Extracts date-related attributes:
+  - `published_year`
+  - `published_month`
+  - `published_day`
+  - `published_weekday`
+- Extracts text-based attributes:
+  - `title_word_count`
+  - `description_word_count`
+
+### **4. Save Processed Data**
+- The processed data is saved as a CSV file in `data/processed/`.
+- The filename includes a timestamp (`processed_YYYYMMDD_HHMMSS.csv`).
+
+### **5. Schema Validation**
+- Ensures the processed CSV file exists.
+- Checks if required columns are present.
+- Converts `title`, `description`, and `url` to string format.
+- Validates expected column data types.
+- Checks if `url` values follow a proper format.
+
+### **6. Execution**
+Run the script with:
+```bash
+python3 src/data/preprocess_feature_eng.py
+```
+If validation fails, it prints the errors found.
+
+---
+
+## **Final Notes**
+- This script automates both **data preprocessing** and **validation** in a single execution.
+- It ensures that the dataset is **clean, structured, and validated** before further processing.

@@ -1,0 +1,24 @@
+# Use official Python image
+FROM python:3.10-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl git vim && rm -rf /var/lib/apt/lists/*
+
+# Copy dependencies first
+COPY requirements-dev.txt requirements-dev.txt
+
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements-dev.txt
+
+# Copy the entire project
+COPY . .
+
+# Expose port for debugging (if needed)
+EXPOSE 8080
+
+# Set entrypoint for interactive shell access
+CMD ["/bin/bash"]

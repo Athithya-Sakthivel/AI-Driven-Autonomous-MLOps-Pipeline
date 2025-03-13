@@ -3,7 +3,7 @@ project:
   name: "Autonomous MLOps Pipeline"
   version: "1.0.0"
 
-# Data paths for all major data stages
+# Data paths for all major data stages (relative paths for correct syncing)
 paths:
   raw_data: "./data/raw"
   processed_data: "./data/processed"
@@ -42,3 +42,15 @@ logging:
 aws:
   bucket_name: "autonomous-mlops-pipelinexw"
   region: "us-east-1"
+  sync_paths:
+    - "./data/raw"
+    - "./data/processed"
+    - "./data/synthetic"
+
+# NewsAPI configuration
+news_api:
+  base_url: "https://newsapi.org/v2/everything"
+  api_key: "b00b276a080b4015ba9aeed375450017"
+  query: "Machine Learning"
+  language: "en"
+  max_results: 100

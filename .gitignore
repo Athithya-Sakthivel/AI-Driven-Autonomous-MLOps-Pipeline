@@ -86,3 +86,26 @@ node_modules/
 *.bak
 *.tmp
 *~
+# Ignore Python caches
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore Virtual Environments
+.venv/
+env/
+
+# Ignore Docker-specific files
+docker-compose.override.yml
+*.log
+*.db
+
+
+# AWS Credentials
+config/aws_credentials.yaml
+
+# Local data and logs
+data/*
+logs/*
+!data/external/
+!data/raw/
