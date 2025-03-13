@@ -96,140 +96,120 @@ This project **pushes the boundaries of AI-driven automation** by enabling model
 
 
 
-AI-Driven-Autonomous-MLOps-Pipeline/
-│
-├── .github/                               # GitHub Actions for CI/CD
-│   └── workflows/
-│       ├── ci.yml                         # CI pipeline (testing, linting)
-│       ├── cd.yml                         # CD pipeline (build, deployment)
-│       └── docker_build.yml               # Multi-stage Docker build pipeline
-│
-├── config/
-│   ├── config.yaml                        # Central config for environment variables, model params, paths
-│   ├── docker-compose.yml                 # Multi-container Docker setup (for local dev)
-│   ├── logging.yaml                       # Logging configuration for centralized logs
-│   ├── credentials/                       # Encrypted credentials (gitignored)
-│   │   └── aws_credentials.yaml           # AWS credentials for cloud deployment
-│   └── environment/                       # Environment-specific configurations
-│       ├── dev.env                        # Development environment variables
-│       ├── prod.env                       # Production environment variables
-│       └── test.env                       # Testing environment variables
-│
-├── data/
-│   ├── raw/                               # Raw datasets from external sources (e.g., GDELT, Kaggle)
-│   ├── processed/                         # Processed data ready for model training
-│   ├── synthetic/                         # Synthetic datasets generated via CTGAN
-│   └── external/                          # External datasets from advanced sources
-│
-├── src/
-│   ├── agents/
-│   │   ├── data_ingestion_agent.py        # Automated data ingestion, validation agent
-│   │   ├── drift_detection_agent.py       # Data drift detection agent (Evidently AI)
-│   │   ├── optimization_agent.py          # Dynamic optimization agent for model tuning (Optuna)
-│   │   ├── retraining_agent.py            # Retraining agent for automated retraining
-│   │   ├── evaluation_agent.py            # Agent for model performance evaluation
-│   │   └── ci_cd_agent.py                 # Automated agent for CI/CD pipeline handling
-│   │
-│   ├── data/
-│   │   ├── ingest_data.py                 # Data ingestion using Polars/Dask for large-scale data
-│   │   ├── preprocess_data.py             # Data cleaning, preprocessing, feature engineering
-│   │   ├── generate_synthetic_data.py     # CTGAN-based synthetic data generation
-│   │   ├── validate_data.py               # Data validation with Great Expectations
-│   │   └── feature_engineering.py         # Feature engineering and transformation
-│   │
-│   ├── models/
-│   │   ├── train_model.py                 # Model training (CatBoost, LightGBM) automation
-│   │   ├── optimize_model.py              # Hyperparameter tuning with Optuna
-│   │   ├── retrain_model.py               # Retraining script for models on data drift
-│   │   ├── evaluate_model.py              # Model evaluation script (performance metrics)
-│   │   └── serve_model.py                 # Model serving (FastAPI/Flask) with Docker
-│   │
-│   ├── pipeline/
-│   │   ├── orchestrate_pipeline.py        # Prefect-based orchestration for end-to-end automation
-│   │   ├── pipeline_utils.py              # Utility functions for task retries, failure handling
-│   │   └── run_pipeline.py                # Entry point to run the pipeline locally or on AWS
-│   │
-│   ├── monitoring/
-│   │   ├── drift_detection.py             # Track data/model drift with Evidently AI metrics
-│   │   ├── model_health_monitor.py        # Continuous model health monitoring (latency, performance)
-│   │   ├── log_performance.py             # Logging model/system performance (using MLflow)
-│   │   └── alerts.py                      # Alerting system for drift, failures, anomalies (AWS SNS, email)
-│   │
-│   ├── infrastructure/
-│   │   ├── docker/
-│   │   │   ├── Dockerfile                 # Multi-stage Dockerfile for local and prod environments
-│   │   │   ├── Dockerfile.dev             # Dockerfile for dev environment with additional dependencies
-│   │   │   └── docker-compose.override.yml # Overrides for Docker-Compose in dev
-│   │   ├── aws/
-│   │   │   ├── ecs_deploy.sh              # AWS ECS deployment script
-│   │   │   └── s3_sync.sh                 # Sync models, data with AWS S3
-│   │   ├── k8s/
-│   │   │   └── k8s_deployment.yaml        # Kubernetes deployment manifests (optional)
-│   │   └── terraform/
-│   │       └── terraform_infra.tf         # Infrastructure-as-code for AWS setup (optional)
-│   │
-│   └── ci_cd/
-│       ├── build_pipeline.py              # CI/CD pipeline for building the project
-│       ├── test_pipeline.py               # CI pipeline for testing (unit, integration, E2E)
-│       └── deploy_pipeline.py             # CD pipeline for deployment on AWS
-│
-├── tests/
-│   ├── unit/
-│   │   ├── test_data_ingestion.py         # Unit tests for data ingestion, validation
-│   │   ├── test_preprocessing.py          # Unit tests for preprocessing
-│   │   ├── test_model_training.py         # Unit tests for training and optimization
-│   │   └── test_drift_detection.py        # Unit tests for Evidently AI-based drift detection
-│   ├── integration/
-│   │   ├── test_pipeline.py               # Integration tests for Prefect pipeline orchestration
-│   │   ├── test_model_serving.py          # Integration tests for model serving (FastAPI/Flask)
-│   └── e2e/
-│       └── test_end_to_end.py             # End-to-end tests for the entire pipeline
-│
-├── notebooks/
-│   ├── eda_gdelt.ipynb                    # Exploratory Data Analysis (EDA) on GDELT dataset
-│   ├── eda_fraud.ipynb                    # EDA on advanced fraud dataset (Kaggle)
-│   └── synthetic_data_analysis.ipynb      # Analysis of synthetic data generated via CTGAN
-│
-├── artifacts/
-│   ├── models/                            # Trained models and artifacts saved after each run
-│   ├── mlflow/                            # MLflow logs and experiment tracking
-│   └── optuna_study/                      # Logs of Optuna optimization experiments
-│
-├── monitoring/
-│   ├── grafana/
-│   │   └── grafana_dashboard.json         # Grafana dashboard for monitoring drift, resource usage
-│   ├── streamlit/
-│   │   └── streamlit_dashboard.py         # Streamlit dashboard for real-time interactive visualization
-│   └── prometheus/
-│       └── prometheus_config.yml          # Prometheus config for monitoring and collecting system metrics
-│
-├── logs/
-│   ├── drift_logs.log                     # Data/model drift logs
-│   ├── performance_logs.log               # Logs for tracking performance metrics
-│   ├── system_logs.log                    # System-level logs (resource usage, errors)
-│   └── alerts/
-│       └── alert_notifications.log        # Alert notifications log for failures or drift detection
-│
-├── docs/
-│   ├── README.md                          # High-level project overview and setup instructions
-│   ├── setup_guide.md                     # Guide to setting up and running the pipeline locally/AWS
-│   ├── deployment_guide.md                # Detailed deployment guide (Docker, AWS, ECS, etc.)
-│   ├── dev_workflow.md                    # Development workflow guide (branching, CI/CD, versioning)
-│   └── aws_deployment.md                  # AWS-specific deployment guide (ECS, S3, etc.)
-│
-├── .env                                   # Environment variables (gitignored)
-├── .gitignore                             # Files and directories to be ignored by git
-├── requirements.txt                       # Production dependencies
-├── requirements-dev.txt                   # Development dependencies (testing, linting, etc.)
-├── requirements-aws.txt                   # AWS-specific dependencies
-├── requirements-docker.txt                # Docker-specific dependencies
-└── requirements-test.txt                  # Testing-specific dependencies (pytest, etc.)
+user@LAPTOP-J7J7UEO3:~/final/AI-Driven-Autonomous-MLOps-Pipeline$ tree
+.
+├── Dockerfile
+├── Dockerfile.dev
+├── README.md
+├── artifacts
+│   ├── mlflow
+│   ├── models
+│   └── optuna_study
+├── config
+│   ├── README.md
+│   ├── aws_credentials.yaml
+│   ├── config.yaml
+│   ├── environments
+│   │   ├── dev.env
+│   │   ├── prod.env
+│   │   └── test.env
+│   ├── logging.yaml
+│   ├── setup_sops.sh
+│   └── sops
+│       └── age
+│           └── keys.txt
+├── data
+│   ├── processed
+│   │   ├── processed_20250313_170111.csv
+│   │   └── processed_20250313_170113.csv
+│   ├── raw
+│   │   ├── newsapi_20250313_140827.json
+│   │   ├── newsapi_20250313_141430.json
+│   │   ├── newsapi_20250313_153012.json
+│   │   ├── newsapi_20250313_153150.json
+│   │   ├── newsapi_20250313_160252.json
+│   │   ├── newsapi_20250313_160305.json
+│   │   ├── newsapi_20250313_160318.json
+│   │   └── newsapi_20250313_160402.json
+│   └── synthetic
+├── docker-compose.override.yml
+├── docker-compose.yml
+├── docs
+│   └── docker.md
+├── logs
+│   └── alerts
+├── monitoring
+│   ├── grafana
+│   │   └── grafana_dashboard.json
+│   ├── prometheus
+│   │   └── prometheus_config.yml
+│   └── streamlit
+│       └── streamlit_dashboard.py
+├── notebooks
+│   ├── eda_fraud.ipynb
+│   ├── eda_gdelt.ipynb
+│   └── synthetic_data_analysis.ipynb
+├── requirements-aws.txt
+├── requirements-dev.txt
+├── requirements-docker.txt
+├── requirements-test.txt
+├── requirements.txt
+├── src
+│   ├── agents
+│   │   ├── ci_cd_agent.py
+│   │   ├── data_ingestion_agent.py
+│   │   ├── drift_detection_agent.py
+│   │   ├── evaluation_agent.py
+│   │   ├── optimization_agent.py
+│   │   └── retraining_agent.py
+│   ├── ci_cd
+│   │   ├── build_pipeline.py
+│   │   ├── deploy_pipeline.py
+│   │   └── test_pipeline.py
+│   ├── data
+│   │   ├── generate_synthetic_data.py
+│   │   ├── ingest_data.py
+│   │   └── preprocess_feature_eng.py
+│   ├── infrastructure
+│   │   ├── aws
+│   │   │   ├── ecs_deploy.sh
+│   │   │   └── s3_data_sync.py
+│   │   ├── k8s
+│   │   │   └── k8s_deployment.yaml
+│   │   └── pulumi
+│   │       ├── Pulumi.dev.yaml
+│   │       ├── Pulumi.yaml
+│   │       ├── __main__.py
+│   │       └── requirements.txt
+│   ├── models
+│   │   ├── evaluate_model.py
+│   │   ├── optimize_model.py
+│   │   ├── retrain_model.py
+│   │   ├── serve_model.py
+│   │   └── train_model.py
+│   ├── monitoring
+│   │   ├── alerts.py
+│   │   ├── drift_detection.py
+│   │   ├── log_performance.py
+│   │   └── model_health_monitor.py
+│   └── pipeline
+│       ├── orchestrate_pipeline.py
+│       ├── pipeline_utils.py
+│       └── run_pipeline.py
+└── tests
+    ├── e2e
+    │   └── test_end_to_end.py
+    ├── integration
+    │   ├── test_model_serving.py
+    │   └── test_pipeline.py
+    └── unit
+        ├── test_data_ingestion.py
+        ├── test_drift_detection.py
+        ├── test_model_training.py
+        └── test_preprocessing.py
 
-
-
-
-
-
+36 directories, 74 files
+user@LAPTOP-J7J7UEO3:~/final/AI-Driven-Autonomous-MLOps-Pipeline$ 
 
 
 
