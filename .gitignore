@@ -86,6 +86,7 @@ node_modules/
 *.bak
 *.tmp
 *~
+
 # Ignore Python caches
 __pycache__/
 *.pyc
@@ -100,12 +101,12 @@ docker-compose.override.yml
 *.log
 *.db
 
-
 # AWS Credentials
 config/aws_credentials.yaml
 
 # Local data and logs
-data/*
 logs/*
-!data/external/
-!data/raw/
+data/raw/
+data/processed/
+data/synthetic/
+data/external/
