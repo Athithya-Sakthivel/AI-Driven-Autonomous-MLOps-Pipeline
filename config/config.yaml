@@ -1,0 +1,44 @@
+# General project settings
+project:
+  name: "Autonomous MLOps Pipeline"
+  version: "1.0.0"
+
+# Data paths for all major data stages
+paths:
+  raw_data: "./data/raw"
+  processed_data: "./data/processed"
+  synthetic_data: "./data/synthetic"
+  models: "./artifacts/models"
+  logs: "./logs"
+
+# Model parameters for CatBoost model
+model:
+  type: "CatBoost"
+  hyperparameters:
+    learning_rate: 0.01
+    max_depth: 6
+    iterations: 1000
+    early_stopping_rounds: 50
+  optimization:
+    algorithm: "Optuna"
+    n_trials: 100
+    timeout: 3600  # 1 hour for tuning time limit
+
+# Autonomous agents' configuration
+agents:
+  data_ingestion_agent:
+    batch_size: 10000
+    retries: 3
+  drift_detection_agent:
+    threshold: 0.05
+  retraining_agent:
+    trigger_drift_threshold: 0.07
+
+# Logging configuration (links to `logging.yaml`)
+logging:
+  level: "INFO"
+
+# AWS S3 settings for model and data storage
+aws:
+  bucket_name: "autonomous-mlops-pipelinexw"
+  region: "us-east-1"
