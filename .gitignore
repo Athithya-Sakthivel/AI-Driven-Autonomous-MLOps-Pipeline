@@ -1,114 +1,52 @@
-# Ignore environment variables and credentials
+=# Ignore environment variables and credentials
 .env
-config/credentials/*
+config/credentials/
 config/aws_credentials.yaml
 config/.sops.yaml
 
-# Ignore SOPS-related encryption keys and directories
+# Ignore SOPS-related encryption keys
 config/sops/
 config/sops/**
-config/sops/age/
-config/sops/age/*
-config/sops/age/keys.txt
 
-# Ignore data files
-data/raw/
-data/processed/
-data/synthetic/
-data/external/
+# Ignore all data directories
+data/
 
-# Ignore logs and monitoring outputs
+# Ignore logs
 logs/
 logs/*.log
-logs/alerts/
-logs/alerts/*.log
-monitoring/grafana/*.json
-monitoring/prometheus/*.yml
 
 # Ignore artifacts and models
 artifacts/
 artifacts/models/
 artifacts/mlflow/
-artifacts/optuna_study/
 
-# Ignore notebooks checkpoints
-notebooks/.ipynb_checkpoints/
-
-# Ignore VSCode and Jupyter files
-.vscode/
-.ipynb_checkpoints/
+# Ignore Python cache and compiled files
 __pycache__/
 *.pyc
 *.pyo
-*.pyd
-*.DS_Store
-
-# Ignore Python virtual environments
-venv/
-env/
-.virtualenv/
-.venv/
-
-# Ignore dependency caches
-*.egg-info/
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Ignore compiled code
 *.so
-*.o
-*.out
-*.a
-*.dylib
-
-# Ignore Docker-related files
-docker-compose.override.yml
-config/docker-compose.override.yml
-infrastructure/docker/*.tar
-
-# Ignore Terraform and Kubernetes state files
-infrastructure/terraform/.terraform/
-infrastructure/terraform/*.tfstate
-infrastructure/terraform/*.tfstate.backup
-infrastructure/k8s/*.yaml
-
-# Ignore CI/CD and build artifacts
-.github/workflows/*.bak
-.github/workflows/*.cache
-dist/
-build/
-node_modules/
-
-# Ignore temporary and swap files
-*.swp
-*.swo
-*.swn
-*.bak
-*.tmp
-*~
-
-# Ignore Python caches
-__pycache__/
-*.pyc
-*.pyo
 
 # Ignore Virtual Environments
 .venv/
 env/
 
-# Ignore Docker-specific files
+# Ignore dependency caches
+*.egg-info/
+pip-log.txt
+
+# Ignore Docker and infrastructure files
 docker-compose.override.yml
-*.log
-*.db
+infrastructure/terraform/.terraform/
+infrastructure/k8s/*.yaml
 
-# AWS Credentials
-config/aws_credentials.yaml
+# Ignore CI/CD and build artifacts
+.github/workflows/*.cache
+dist/
+build/
+node_modules/
 
-# Local data and logs
-logs/*
-data/raw/
-data/processed/
-data/synthetic/
-data/external/
-git add .
-
+# Ignore swap and temporary files
+*.swp
+*.swo
+*.tmp
+*~
