@@ -436,9 +436,6 @@ This **blueprint** is comprehensive and ensures you are using modern, cutting-ed
   - **10.6.2.2 `developer_workflow_v3.md`**: Guide covering advanced workflows like distributed development, code reviews, and CI/CD strategies across multi-cloud environments.
 
 ---
-git config --global user.name "Athithya Sakthivel"
-git config --global user.email "athithyasakthivel1@gmail.com"
-
 #### 10.7 **Security, Access Control, and Compliance Iteration**
 
 - **10.7.1 Extended Security Audits**
